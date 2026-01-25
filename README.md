@@ -1,61 +1,55 @@
-# Calories-Expense-Tracker
-A Tracker to Track Your Daily Calories Intake
-# Calorie & Expense Tracker (CLI)
+# 🍽️ Calorie & Protein Tracker (CLI)
 
-A simple Python command-line application to track daily calorie and protein intake. This project demonstrates file handling, date manipulation, and basic user interaction in Python.
+A Python command-line application for tracking daily meals, calories, and protein intake.  
+The app provides daily and weekly summaries and checks whether the user meets a **personalized protein goal based on body weight**.
+
+This project was built as a portfolio project to demonstrate fundamental computer science skills such as data handling, control flow, and clean program structure.
 
 ---
 
-## Features
-- Add meal entries with:
+## 🚀 Features
+
+- Add meals with:
   - Food name
   - Calories
   - Protein (grams)
-- View total calories and protein **for today**
-- View total calories and protein **for the last 7 days**
-- Data persists in a JSON file (`data.json`) between sessions
+  - Category (Breakfast, Lunch, Dinner, Snack)
+- View **today’s calorie and protein summary**
+- View **last 7 days summary** in a table format
+- **Edit or delete meals** from any date
+- **Personalized protein goal tracking**
+  - Daily protein goal = **2 × body weight (kg)**
+  - Visual feedback:
+    - ✅ Goal met
+    - ⚠️ Goal not met
+- Data stored locally using JSON
 
 ---
 
-## Tech Stack
-- Python 3
-- JSON for data storage
-- Standard Python libraries (`datetime`, `json`)
+## 🧠 Protein Goal Logic
 
----
+The application calculates the daily protein goal using the formula:
 
-## How to Run
-1. Clone this repository:
-```bash
-git clone https://github.com/nicolasletran/Calories-Expense-Tracker.git
-cd Calories-Expense-Tracker
-```
-Run the tracker: 
-```bash
-python tracker.py
-```
-Project Structure: 
-calorie-expense-tracker-cli/
-├── tracker.py       # Main Python script
-├── data.json        # Stores all meal entries
-└── README.md        # Project documentation
+Protein Goal (g) = 2 × Body Weight (kg)
 
-What I Learned:
+This project helped me practice:
 
-How to read/write JSON files in Python
+File I/O with JSON
 
-Using datetime for daily and weekly summaries
+Data aggregation and filtering
 
-Designing a small CLI application with menus and user input
+Command-line user interaction
 
-Structuring a project for readability and maintainability
+Input validation and error handling
 
-Future Improvements
+Writing clean, maintainable Python code
 
-Add visualization of weekly calories/protein using matplotlib
+🔮 Future Improvements
 
-Allow editing and deleting meal entries
+Allow users to input body weight dynamically
 
-Create a web version using Flask for a graphical interface
+Show weekly average protein intake
 
-Support multiple users with separate data files
+Export data to CSV
+
+Build a web version using Flask
