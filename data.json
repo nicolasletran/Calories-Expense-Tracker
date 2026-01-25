@@ -1,0 +1,22 @@
+{
+    "entries": [
+        {
+            "date": "2026-01-24",
+            "food": "Chicken Breast",
+            "calories": 220,
+            "protein": 40
+        },
+        {
+            "date": "2026-01-24",
+            "food": "Pasta",
+            "calories": 220,
+            "protein": 5
+        },
+        {
+            "date": "2026-01-24",
+            "food": "cheetos",
+            "calories": 300,
+            "protein": 10
+        }
+    ]
+}
