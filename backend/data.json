@@ -13,6 +13,20 @@
             "protein": 30,
             "category": "Dinner",
             "date": "2026-02-10"
+        },
+        {
+            "food": "chicken wing 100g",
+            "calories": 165,
+            "protein": 31,
+            "category": "Dinner",
+            "date": "2026-02-09"
+        },
+        {
+            "food": "apple 200g",
+            "calories": 104,
+            "protein": 1,
+            "category": "Breakfast",
+            "date": "2026-02-10"
         }
     ]
 }
