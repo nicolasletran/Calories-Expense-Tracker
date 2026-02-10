@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie & Protein Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-apple-alt"></i> Calorie Tracker</h1>
+            <div class="header-stats">
+                <div class="stat-card today-stat">
+                    <h3>Today</h3>
+                    <div id="today-calories">0 cal</div>
+                    <div id="today-protein">0g</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="left-panel">
+                <section class="card add-meal-form">
+                    <h2><i class="fas fa-plus-circle"></i> Add Meal</h2>
+                    <form id="meal-form">
+                        <div class="form-group">
+                            <label for="food-name">Food Name</label>
+                            <input type="text" id="food-name" placeholder="e.g., Grilled Chicken" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="calories">Calories</label>
+                                <input type="number" id="calories" min="0" step="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="protein">Protein (g)</label>
+                                <input type="number" id="protein" min="0" step="1" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select id="category" required>
+                                <option value="Breakfast">Breakfast</option>
+                                <option value="Lunch">Lunch</option>
+                                <option value="Dinner">Dinner</option>
+                                <option value="Snack">Snack</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="date">Date</label>
+                            <input type="date" id="date">
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Add Meal
+                        </button>
+                        <button type="button" id="refresh-btn" class="btn btn-secondary">
+                            <i class="fas fa-sync"></i> Refresh
+                        </button>
+                    </form>
+                </section>
+
+                <section class="card today-meals">
+                    <h2><i class="fas fa-utensils"></i> Today's Meals</h2>
+                    <div id="meals-list">
+                        <p class="empty-state">Loading meals...</p>
+                    </div>
+                </section>
+            </div>
+
+            <div class="right-panel">
+                <section class="card weekly-summary">
+                    <h2><i class="fas fa-chart-line"></i> Weekly Summary</h2>
+                    <div class="chart-container">
+                        <canvas id="weeklyChart"></canvas>
+                    </div>
+                    <div id="weekly-stats" class="stats-container">
+                        <div class="stat-row">
+                            <span>Avg Calories:</span>
+                            <span id="weekly-avg-cal">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Avg Protein:</span>
+                            <span id="weekly-avg-prot">0g</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Goal Days:</span>
+                            <span id="weekly-goal-days">0/7</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card goal-progress">
+                    <h2><i class="fas fa-bullseye"></i> Protein Goal</h2>
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Today's Protein</span>
+                            <span id="protein-progress-text">0/140g</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="protein-progress" class="progress-fill"></div>
+                        </div>
+                        <div id="protein-message" class="goal-message">
+                            No data yet
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card quick-stats">
+                    <h2><i class="fas fa-tachometer-alt"></i> Quick Stats</h2>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-icon"><i class="fas fa-fire"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="total-meals">0</div>
+                                <div class="stat-label">Total Meals</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon"><i class="fas fa-dumbbell"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="avg-daily-cal">0</div>
+                                <div class="stat-label">Avg Calories</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="goal-rate">0%</div>
+                                <div class="stat-label">Goal Rate</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Meal</h2>
+            <form id="edit-form">
+                <input type="hidden" id="edit-index">
+                <div class="form-group">
+                    <label for="edit-food">Food Name</label>
+                    <input type="text" id="edit-food" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-calories">Calories</label>
+                        <input type="number" id="edit-calories" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-protein">Protein (g)</label>
+                        <input type="number" id="edit-protein" min="0" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="edit-category">Category</label>
+                    <select id="edit-category">
+                        <option value="Breakfast">Breakfast</option>
+                        <option value="Lunch">Lunch</option>
+                        <option value="Dinner">Dinner</option>
+                        <option value="Snack">Snack</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-date">Date</label>
+                    <input type="date" id="edit-date">
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" id="delete-meal" class="btn btn-danger">Delete Meal</button>
+                    <button type="button" id="cancel-edit" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

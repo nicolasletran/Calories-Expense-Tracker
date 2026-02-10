@@ -1,0 +1,18 @@
+{
+    "entries": [
+        {
+            "food": "chicken",
+            "calories": 300,
+            "protein": 34,
+            "category": "Breakfast",
+            "date": "2026-02-10"
+        },
+        {
+            "food": "sườn rim mặn",
+            "calories": 500,
+            "protein": 30,
+            "category": "Dinner",
+            "date": "2026-02-10"
+        }
+    ]
+}
