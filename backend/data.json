@@ -5,28 +5,56 @@
             "calories": 300,
             "protein": 34,
             "category": "Breakfast",
-            "date": "2026-02-10"
+            "date": "2026-02-10",
+            "id": "cd8edf6a-725a-4388-88b1-6329abf77ba8"
         },
         {
             "food": "sườn rim mặn",
             "calories": 500,
             "protein": 30,
             "category": "Dinner",
-            "date": "2026-02-10"
+            "date": "2026-02-10",
+            "id": "2f3b709b-f1ce-4406-a3c8-a20758729d42"
         },
         {
             "food": "chicken wing 100g",
             "calories": 165,
             "protein": 31,
             "category": "Dinner",
-            "date": "2026-02-09"
+            "date": "2026-02-09",
+            "id": "5cde5b9c-761b-4054-88f4-16eade071b95"
         },
         {
             "food": "apple 200g",
             "calories": 104,
             "protein": 1,
             "category": "Breakfast",
-            "date": "2026-02-10"
+            "date": "2026-02-10",
+            "id": "717c7feb-e9b2-4493-b5e9-fa4eadd3dd7c"
+        },
+        {
+            "food": "Instant Noodle",
+            "calories": 500,
+            "protein": 15,
+            "category": "Breakfast",
+            "date": "2026-02-10",
+            "id": "0f17b530-f55c-482f-87f6-05c489fd7221",
+            "created_at": "2026-02-10T22:46:59.249075"
+        },
+        {
+            "food": "Sườn Rim Mặn",
+            "calories": 152,
+            "protein": 10,
+            "category": "Breakfast",
+            "date": "2026-02-10",
+            "id": "bd9329e7-8d97-4e47-a82e-e58ee34401d7",
+            "created_at": "2026-02-10T23:11:25.271567"
         }
-    ]
+    ],
+    "metadata": {
+        "created_at": "2026-02-10T23:11:25.271567",
+        "last_modified": "2026-02-10T23:11:25.271567",
+        "total_entries": 6,
+        "version": "1.0.0"
+    }
 }

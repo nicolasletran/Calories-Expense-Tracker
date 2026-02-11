@@ -2,182 +2,508 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
     <title>Calorie & Protein Tracker</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Floating background elements -->
+    <div class="floating-bg"></div>
+    <div class="floating-bg"></div>
+    
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+        <button id="theme-toggle-btn" class="btn-theme">
+            <i class="fas fa-moon"></i>
+            <span>Dark Mode</span>
+        </button>
+    </div>
+    
     <div class="container">
         <header class="header">
-            <h1><i class="fas fa-apple-alt"></i> Calorie Tracker</h1>
-            <div class="header-stats">
-                <div class="stat-card today-stat">
-                    <h3>Today</h3>
-                    <div id="today-calories">0 cal</div>
-                    <div id="today-protein">0g</div>
+            <div class="header-content">
+                <div class="header-title">
+                    <h1><i class="fas fa-apple-alt"></i> NutriTrack AI</h1>
+                    <p class="subtitle">Track calories & protein with AI assistance</p>
+                </div>
+                <div class="header-stats">
+                    <div class="stat-card today-stat">
+                        <div class="stat-icon"><i class="fas fa-fire"></i></div>
+                        <div class="stat-content">
+                            <h3>Today's Calories</h3>
+                            <div id="today-calories" class="stat-number">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card today-stat">
+                        <div class="stat-icon"><i class="fas fa-dumbbell"></i></div>
+                        <div class="stat-content">
+                            <h3>Today's Protein</h3>
+                            <div id="today-protein" class="stat-number">0g</div>
+                        </div>
+                    </div>
+                    <!-- Export/Import Buttons -->
+                    <div class="header-actions">
+                        <button id="export-btn" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                        <button id="import-btn" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-upload"></i> Import
+                        </button>
+                        <input type="file" id="import-file" accept=".json" style="display: none;">
+                    </div>
                 </div>
             </div>
+            
+            <!-- Keyboard Shortcuts Hint -->
+            <div class="keyboard-hint">
+                <i class="fas fa-keyboard"></i>
+                <span>Shortcuts: Ctrl+E (Export) • Esc (Close modal)</span>
+            </div>
         </header>
+
+        <!-- Date Navigation -->
+        <div class="date-navigator">
+            <button id="prev-day" class="btn btn-secondary btn-sm">
+                <i class="fas fa-chevron-left"></i> Previous Day
+            </button>
+            <div class="current-date-display">
+                <div class="date-label">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span id="current-date-label">Today</span>
+                </div>
+                <div id="current-date" class="date-value">2024-01-15</div>
+            </div>
+            <div class="date-actions">
+                <button id="today-btn" class="btn btn-primary btn-sm">
+                    <i class="fas fa-calendar-day"></i> Today
+                </button>
+                <button id="next-day" class="btn btn-secondary btn-sm" disabled>
+                    Next Day <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
 
         <div class="main-content">
             <div class="left-panel">
                 <section class="card add-meal-form">
-                    <h2><i class="fas fa-plus-circle"></i> Add Meal</h2>
+                    <div class="card-header">
+                        <h2><i class="fas fa-plus-circle"></i> Add New Meal</h2>
+                        <div class="card-badge">AI-Powered</div>
+                    </div>
                     <form id="meal-form">
                         <div class="form-group">
-                            <label for="food-name">Food Name</label>
-                            <input type="text" id="food-name" placeholder="e.g., Grilled Chicken" required>
+                            <label for="food-name">
+                                <i class="fas fa-utensils"></i> Food Name
+                            </label>
+                            <input type="text" id="food-name" placeholder="e.g., Grilled Chicken 200g" required autofocus>
+                            <div class="input-hint">
+                                <i class="fas fa-lightbulb"></i> 
+                                <div class="hint-content">
+                                    <strong>Tips:</strong>
+                                    <ul>
+                                        <li>Include weight for better AI prediction (e.g., "banana 120g", "rice 150 grams")</li>
+                                        <li>Vietnamese units supported: cân (500g), lạng (100g), chỉ (3.75g)</li>
+                                        <li>Portion sizes: slice, piece, cup, tablespoon, teaspoon</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
+                        
+                        <div class="nutrition-grid">
+                            <div class="nutrition-input">
+                                <label for="calories">
+                                    <i class="fas fa-fire"></i> Calories
+                                </label>
+                                <div class="input-with-unit">
+                                    <input type="number" id="calories" min="0" max="10000" step="1" required>
+                                    <span class="unit">cal</span>
+                                </div>
+                                <div class="validation-message" id="calories-validation"></div>
+                            </div>
+                            <div class="nutrition-input">
+                                <label for="protein">
+                                    <i class="fas fa-dumbbell"></i> Protein
+                                </label>
+                                <div class="input-with-unit">
+                                    <input type="number" id="protein" min="0" max="500" step="1" required>
+                                    <span class="unit">g</span>
+                                </div>
+                                <div class="validation-message" id="protein-validation"></div>
+                            </div>
+                        </div>
+                        
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="calories">Calories</label>
-                                <input type="number" id="calories" min="0" step="1" required>
+                                <label for="category">
+                                    <i class="fas fa-tag"></i> Category
+                                </label>
+                                <div class="category-select">
+                                    <select id="category" required>
+                                        <option value="Breakfast">🍳 Breakfast</option>
+                                        <option value="Lunch">🥗 Lunch</option>
+                                        <option value="Dinner">🍽️ Dinner</option>
+                                        <option value="Snack">🍎 Snack</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down select-arrow"></i>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <label for="protein">Protein (g)</label>
-                                <input type="number" id="protein" min="0" step="1" required>
+                                <label for="date">
+                                    <i class="fas fa-calendar"></i> Date
+                                </label>
+                                <div class="date-input-wrapper">
+                                    <input type="date" id="date">
+                                    <i class="fas fa-calendar-alt date-icon"></i>
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="category">Category</label>
-                            <select id="category" required>
-                                <option value="Breakfast">Breakfast</option>
-                                <option value="Lunch">Lunch</option>
-                                <option value="Dinner">Dinner</option>
-                                <option value="Snack">Snack</option>
-                            </select>
+                        
+                        <!-- AI Prediction Section -->
+                        <div class="ai-prediction" id="ai-prediction-section" style="display: none;">
+                            <div class="ai-header">
+                                <div class="ai-badge">
+                                    <i class="fas fa-robot"></i>
+                                    <span>AI Prediction</span>
+                                </div>
+                                <span class="ai-confidence" id="ai-confidence">High Confidence</span>
+                            </div>
+                            <div class="ai-results" id="ai-results">
+                                <!-- AI results will appear here -->
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="date">Date</label>
-                            <input type="date" id="date">
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-plus-circle"></i> Add Meal
+                            </button>
+                            <div class="action-buttons">
+                                <button type="button" id="ai-predict-btn" class="btn btn-gradient btn-sm">
+                                    <i class="fas fa-magic"></i> AI Predict
+                                </button>
+                                <button type="button" id="refresh-btn" class="btn btn-outline btn-sm">
+                                    <i class="fas fa-sync-alt"></i> Refresh
+                                </button>
+                                <button type="button" id="clear-btn" class="btn btn-outline btn-sm">
+                                    <i class="fas fa-times"></i> Clear
+                                </button>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Add Meal
-                        </button>
-                        <button type="button" id="refresh-btn" class="btn btn-secondary">
-                            <i class="fas fa-sync"></i> Refresh
-                        </button>
                     </form>
                 </section>
 
                 <section class="card today-meals">
-                    <h2><i class="fas fa-utensils"></i> Today's Meals</h2>
-                    <div id="meals-list">
-                        <p class="empty-state">Loading meals...</p>
+                    <div class="card-header">
+                        <h2><i class="fas fa-utensils"></i> <span id="meals-title">Today's Meals</span></h2>
+                        <div class="meals-count" id="meals-count">0 meals</div>
+                    </div>
+                    <div id="meals-list" class="meals-container">
+                        <div class="empty-state">
+                            <i class="fas fa-utensils"></i>
+                            <h3>No meals yet</h3>
+                            <p>Add your first meal to get started!</p>
+                        </div>
                     </div>
                 </section>
             </div>
 
             <div class="right-panel">
+                <section class="card recent-days">
+                    <div class="card-header">
+                        <h2><i class="fas fa-history"></i> Recent Days</h2>
+                        <i class="fas fa-clock history-icon"></i>
+                    </div>
+                    <div id="recent-days-list" class="recent-days-list">
+                        <!-- Recent days will be populated by JavaScript -->
+                    </div>
+                </section>
+
                 <section class="card weekly-summary">
-                    <h2><i class="fas fa-chart-line"></i> Weekly Summary</h2>
+                    <div class="card-header">
+                        <h2><i class="fas fa-chart-line"></i> Weekly Progress</h2>
+                        <div class="trend-indicator" id="trend-indicator">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+0%</span>
+                        </div>
+                    </div>
                     <div class="chart-container">
                         <canvas id="weeklyChart"></canvas>
                     </div>
-                    <div id="weekly-stats" class="stats-container">
-                        <div class="stat-row">
-                            <span>Avg Calories:</span>
-                            <span id="weekly-avg-cal">0</span>
+                    <div class="weekly-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon"><i class="fas fa-fire"></i></div>
+                            <div class="stat-details">
+                                <div class="stat-label">Avg. Calories</div>
+                                <div class="stat-value" id="weekly-avg-cal">0</div>
+                            </div>
                         </div>
-                        <div class="stat-row">
-                            <span>Avg Protein:</span>
-                            <span id="weekly-avg-prot">0g</span>
+                        <div class="stat-item">
+                            <div class="stat-icon"><i class="fas fa-dumbbell"></i></div>
+                            <div class="stat-details">
+                                <div class="stat-label">Avg. Protein</div>
+                                <div class="stat-value" id="weekly-avg-prot">0g</div>
+                            </div>
                         </div>
-                        <div class="stat-row">
-                            <span>Goal Days:</span>
-                            <span id="weekly-goal-days">0/7</span>
+                        <div class="stat-item">
+                            <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+                            <div class="stat-details">
+                                <div class="stat-label">Goal Days</div>
+                                <div class="stat-value" id="weekly-goal-days">0/7</div>
+                            </div>
                         </div>
                     </div>
                 </section>
 
                 <section class="card goal-progress">
-                    <h2><i class="fas fa-bullseye"></i> Protein Goal</h2>
+                    <div class="card-header">
+                        <h2><i class="fas fa-bullseye"></i> Protein Goal</h2>
+                        <div class="goal-target">140g</div>
+                    </div>
                     <div class="progress-container">
-                        <div class="progress-label">
-                            <span>Today's Protein</span>
-                            <span id="protein-progress-text">0/140g</span>
+                        <div class="progress-header">
+                            <div class="progress-label">
+                                <span>Today's Progress</span>
+                                <span id="protein-progress-text">0/140g</span>
+                            </div>
+                            <div class="progress-percent" id="protein-percent">0%</div>
                         </div>
                         <div class="progress-bar">
-                            <div id="protein-progress" class="progress-fill"></div>
+                            <div id="protein-progress" class="progress-fill">
+                                <div class="progress-glow"></div>
+                            </div>
+                            <div class="progress-marks">
+                                <span>0</span>
+                                <span>70</span>
+                                <span>140</span>
+                            </div>
                         </div>
                         <div id="protein-message" class="goal-message">
-                            No data yet
+                            <i class="fas fa-utensils"></i>
+                            <span>Start logging meals to track progress</span>
                         </div>
                     </div>
                 </section>
 
                 <section class="card quick-stats">
-                    <h2><i class="fas fa-tachometer-alt"></i> Quick Stats</h2>
+                    <div class="card-header">
+                        <h2><i class="fas fa-tachometer-alt"></i> Quick Stats</h2>
+                        <i class="fas fa-chart-pie stats-icon"></i>
+                    </div>
                     <div class="stats-grid">
-                        <div class="stat-item">
-                            <div class="stat-icon"><i class="fas fa-fire"></i></div>
-                            <div class="stat-info">
+                        <div class="stat-card-small">
+                            <div class="stat-icon-wrapper">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                            <div class="stat-content-small">
                                 <div class="stat-value" id="total-meals">0</div>
                                 <div class="stat-label">Total Meals</div>
                             </div>
+                            <div class="stat-trend neutral">
+                                <i class="fas fa-minus"></i>
+                                <span>-</span>
+                            </div>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-icon"><i class="fas fa-dumbbell"></i></div>
-                            <div class="stat-info">
+                        <div class="stat-card-small">
+                            <div class="stat-icon-wrapper">
+                                <i class="fas fa-dumbbell"></i>
+                            </div>
+                            <div class="stat-content-small">
                                 <div class="stat-value" id="avg-daily-cal">0</div>
                                 <div class="stat-label">Avg Calories</div>
                             </div>
+                            <div class="stat-trend neutral">
+                                <i class="fas fa-minus"></i>
+                                <span>-</span>
+                            </div>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-                            <div class="stat-info">
+                        <div class="stat-card-small">
+                            <div class="stat-icon-wrapper">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-content-small">
                                 <div class="stat-value" id="goal-rate">0%</div>
                                 <div class="stat-label">Goal Rate</div>
                             </div>
+                            <div class="stat-trend neutral">
+                                <i class="fas fa-minus"></i>
+                                <span>-</span>
+                            </div>
                         </div>
+                    </div>
+                    <div class="common-foods" id="common-foods">
+                        <!-- Common foods will appear here -->
                     </div>
                 </section>
             </div>
         </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <i class="fas fa-heart"></i>
+                    <span>Built with ❤️ • NutriTrack AI v1.0</span>
+                </div>
+                <div class="footer-links">
+                    <button id="health-check" class="btn-link">
+                        <i class="fas fa-heartbeat"></i> Health Check
+                    </button>
+                    <button id="database-info" class="btn-link">
+                        <i class="fas fa-database"></i> Database Info
+                    </button>
+                    <button id="keyboard-help" class="btn-link">
+                        <i class="fas fa-question-circle"></i> Help
+                    </button>
+                </div>
+            </div>
+        </footer>
     </div>
 
     <!-- Edit Modal -->
     <div id="editModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Edit Meal</h2>
+            <div class="modal-header">
+                <h2><i class="fas fa-edit"></i> Edit Meal</h2>
+                <span class="close">&times;</span>
+            </div>
             <form id="edit-form">
                 <input type="hidden" id="edit-index">
+                <input type="hidden" id="edit-id">
                 <div class="form-group">
-                    <label for="edit-food">Food Name</label>
+                    <label for="edit-food"><i class="fas fa-utensils"></i> Food Name</label>
                     <input type="text" id="edit-food" required>
+                </div>
+                <div class="nutrition-grid">
+                    <div class="nutrition-input">
+                        <label for="edit-calories"><i class="fas fa-fire"></i> Calories</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="edit-calories" min="0" max="10000" required>
+                            <span class="unit">cal</span>
+                        </div>
+                    </div>
+                    <div class="nutrition-input">
+                        <label for="edit-protein"><i class="fas fa-dumbbell"></i> Protein</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="edit-protein" min="0" max="500" required>
+                            <span class="unit">g</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="edit-calories">Calories</label>
-                        <input type="number" id="edit-calories" min="0" required>
+                        <label for="edit-category"><i class="fas fa-tag"></i> Category</label>
+                        <div class="category-select">
+                            <select id="edit-category">
+                                <option value="Breakfast">🍳 Breakfast</option>
+                                <option value="Lunch">🥗 Lunch</option>
+                                <option value="Dinner">🍽️ Dinner</option>
+                                <option value="Snack">🍎 Snack</option>
+                            </select>
+                            <i class="fas fa-chevron-down select-arrow"></i>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="edit-protein">Protein (g)</label>
-                        <input type="number" id="edit-protein" min="0" required>
+                        <label for="edit-date"><i class="fas fa-calendar"></i> Date</label>
+                        <div class="date-input-wrapper">
+                            <input type="date" id="edit-date">
+                            <i class="fas fa-calendar-alt date-icon"></i>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="edit-category">Category</label>
-                    <select id="edit-category">
-                        <option value="Breakfast">Breakfast</option>
-                        <option value="Lunch">Lunch</option>
-                        <option value="Dinner">Dinner</option>
-                        <option value="Snack">Snack</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="edit-date">Date</label>
-                    <input type="date" id="edit-date">
-                </div>
-                <div class="modal-buttons">
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                    <button type="button" id="delete-meal" class="btn btn-danger">Delete Meal</button>
-                    <button type="button" id="cancel-edit" class="btn btn-secondary">Cancel</button>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <button type="button" id="delete-meal" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                    <button type="button" id="cancel-edit" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Health Check Modal -->
+    <div id="healthModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-heartbeat"></i> System Health</h2>
+                <span class="close-health">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="health-status" id="health-status">
+                    <div class="health-loading">
+                        <i class="fas fa-spinner fa-spin"></i> Checking system health...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Database Info Modal -->
+    <div id="databaseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-database"></i> Database Information</h2>
+                <span class="close-database">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="database-info" id="database-info-content">
+                    <div class="info-loading">
+                        <i class="fas fa-spinner fa-spin"></i> Loading database information...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Keyboard Help Modal -->
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-keyboard"></i> Keyboard Shortcuts</h2>
+                <span class="close-help">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="shortcuts-list">
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">Ctrl + E</span>
+                        <span class="shortcut-desc">Export all data</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">Esc</span>
+                        <span class="shortcut-desc">Close modal or cancel action</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">Tab</span>
+                        <span class="shortcut-desc">Navigate between form fields</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">Enter</span>
+                        <span class="shortcut-desc">Submit form (when focused)</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">/</span>
+                        <span class="shortcut-desc">Focus search (coming soon)</span>
+                    </div>
+                </div>
+                <div class="tips-section">
+                    <h3><i class="fas fa-lightbulb"></i> Tips</h3>
+                    <ul>
+                        <li>Include weight in food names for better AI predictions (e.g., "chicken 200g")</li>
+                        <li>Use Vietnamese units: cân (500g), lạng (100g), chỉ (3.75g)</li>
+                        <li>Press "AI Predict" after typing food name to get automatic nutrient estimates</li>
+                        <li>Click on recent days to quickly navigate to that date</li>
+                        <li>Export your data regularly for backup</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
