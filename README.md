@@ -16,4 +16,4 @@ A modern web application for tracking daily calorie and protein intake with beau
 ```bash
 cd backend
 pip install -r requirements.txt
-python app.py
+python server.py
